@@ -15,15 +15,16 @@ predictButton.onclick = () => {
 
 // functions to handle socket events
 socket.on('connect', () => {
-    document.getElementById('waiting-msg').style.display = 'none';
-    document.getElementById('trainingStatus').innerHTML = 'Training in Progress';
-});
-
-socket.on('trainingComplete', () => {
   document.getElementById('trainingStatus').innerHTML = 'Training Complete';
   document.getElementById('predictSample').innerHTML = '[' + testSample.join(', ') + ']';
   predictContainer.style.display = 'block';
 });
+
+// socket.on('trainingComplete', () => {
+//   document.getElementById('trainingStatus').innerHTML = 'Training Complete';
+//   document.getElementById('predictSample').innerHTML = '[' + testSample.join(', ') + ']';
+//   predictContainer.style.display = 'block';
+// });
 
 socket.on('predictResult', (result) => {
   plotPredictResult(result);

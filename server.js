@@ -13,6 +13,9 @@ function sleep(ms) {
 }
 
 // Main function to start server, perform model training, and emit stats via the socket connection
+let state = {
+    trained:false
+}
 async function run() {
     const port = process.env.PORT || PORT;
     const server = http.createServer();
@@ -24,7 +27,12 @@ async function run() {
 
     io.on('connection', (socket) => {
         socket.on('predictSample', async (sample) => {
-            io.emit('predictResult', await pitch_type.predictSample(sample));
+            if (state.trained) {
+                io.emit('predictResult', await pitch_type.predictSample(sample));
+            } else {
+                io.emit('predictResult', 'Null');
+            }
+            
         });
     });
 
@@ -37,8 +45,7 @@ async function run() {
         console.log('accuracyPerClass', await pitch_type.evaluate(true));
         await sleep(TIMEOUT_BETWEEN_EPOCHS_MS);
     }
-
-    io.emit('trainingComplete', true);
+    state.trained = true;
 }
 
 run();
